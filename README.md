@@ -37,7 +37,8 @@ Commands:
 
 - `/superpowers-brainstorm`
 - `/superpowers-write-plan`
-- `/superpowers-execute-plan`
+- `/superpowers-execute-plan` (sequential execution)
+- `/superpowers-execute-plan-parallel` (parallel execution with subagents)
 - `/superpowers-review`
 - `/superpowers-debug`
 - `/superpowers-finish`
@@ -71,6 +72,7 @@ Included skills:
 │   ├── superpowers-brainstorm.md
 │   ├── superpowers-debug.md
 │   ├── superpowers-execute-plan.md
+│   ├── superpowers-execute-plan-parallel.md  # NEW: Parallel execution
 │   ├── superpowers-finish.md
 │   ├── superpowers-review.md
 │   ├── superpowers-write-plan.md
@@ -79,6 +81,7 @@ Included skills:
     └── ... (skills folders)
     └── superpowers-workflow/scripts/
         ├── record_activation.py
+        ├── spawn_subagent.py              # NEW: Subagent spawning
         └── write_artifact.py
 
 e2e_demo/
@@ -88,6 +91,10 @@ e2e_demo/
 
 artifacts/
 └── superpowers/     # generated outputs (ignored by git)
+    ├── plan.md
+    ├── execution.md
+    ├── finish.md
+    └── subagents/   # parallel execution logs
 ```
 
 ---
@@ -173,6 +180,12 @@ APPROVED
 /superpowers-execute-plan
 ```
 
+Or for parallel execution (if plan has independent steps):
+
+```
+/superpowers-execute-plan-parallel
+```
+
 **Optional explicit passes:**
 
 ```
@@ -181,7 +194,47 @@ APPROVED
 /superpowers-finish
 ```
 
-### 3. Artifact persistence (important)
+### 3. Parallel execution (optional but powerful)
+
+**When to use parallel mode:**
+
+Parallel execution spawns isolated subagents to execute independent plan steps simultaneously, reducing total execution time.
+
+**Example:**
+- **Sequential**: Step 1 (5 min) → Step 2 (5 min) → Step 3 (5 min) = **15 minutes**
+- **Parallel**: Steps 1, 2, 3 run simultaneously = **~5 minutes**
+
+**How it works:**
+
+1. The workflow analyzes your plan for dependencies
+2. Groups steps into batches (Batch 1: independent steps, Batch 2: depends on Batch 1, etc.)
+3. Spawns isolated `gemini-cli` subagents for each step in a batch
+4. Each subagent has focused context (only sees its step + skill instructions)
+5. Results are consolidated and verified after each batch
+
+**When parallel mode is beneficial:**
+- Plan has 3+ independent steps
+- Steps modify different files
+- Steps don't depend on each other
+- You want faster execution
+
+**When to stick with sequential:**
+- Steps have dependencies
+- All steps modify the same file
+- Easier to debug (sequential is simpler)
+
+**Usage:**
+```
+/superpowers-execute-plan-parallel
+```
+
+Or let the regular workflow suggest it:
+```
+/superpowers-execute-plan
+# Agent will detect independent steps and ask if you want parallel mode
+```
+
+### 4. Artifact persistence (important)
 
 Workflows persist outputs to disk under:
 
@@ -199,6 +252,13 @@ Examples:
 - `finish.md`
 
 Some workflows use `write_artifact.py` to avoid IDE-only documents and ensure files exist on disk.
+
+Parallel execution logs are saved to:
+```
+artifacts/superpowers/subagents/
+```
+
+Each subagent gets a unique log file with full execution details.
 
 ---
 
@@ -242,6 +302,7 @@ PRs welcome. Good targets:
 - Tighter execute-plan checkpoints
 - Additional language stacks (Node/TS, Go)
 - More E2E demos for real integration patterns
+- Enhancements to parallel execution (smart dependency detection, progress visualization)
 
 ---
 

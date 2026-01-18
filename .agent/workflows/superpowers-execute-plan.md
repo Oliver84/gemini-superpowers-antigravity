@@ -33,6 +33,17 @@ If `artifacts/superpowers/plan.md` does not exist:
 - Read `artifacts/superpowers/plan.md`.
 - Restate the plan briefly (1–2 lines) before making changes.
 
+## Check for parallel execution opportunity (optional)
+After loading the plan, analyze if steps can run in parallel:
+
+1. **Check for independent steps**: Do 2+ steps operate on different files with no dependencies?
+2. **If yes**: Suggest to the user:
+   - "I notice steps X, Y, Z are independent and could run in parallel."
+   - "Would you like to use `/superpowers-execute-plan-parallel` for faster execution?"
+   - "Or continue with sequential execution? (Reply: PARALLEL or SEQUENTIAL)"
+3. **If PARALLEL**: Stop and instruct user to run `/superpowers-execute-plan-parallel` instead.
+4. **If SEQUENTIAL or no independent steps**: Continue with sequential execution below.
+
 ## Skills to apply as needed
 Read and apply these skills when relevant:
 - `superpowers-tdd` (preferred)
