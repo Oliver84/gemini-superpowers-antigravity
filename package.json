@@ -1,0 +1,14 @@
+{
+  "name": "google-antigravity-superpowers",
+  "version": "1.0.0",
+  "description": "Installer for the Gemini Superpowers Antigravity framework",
+  "bin": {
+    "superpowers-install": "./bin/install.js",
+    "superpowers-uninstall": "./bin/uninstall.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Google",
+  "license": "MIT"
+}

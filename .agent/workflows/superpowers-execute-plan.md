@@ -18,6 +18,10 @@ Requirements:
 
 If you are unable to write these files directly, use `python .agent/skills/superpowers-workflow/scripts/write_artifact.py --path <target>` to persist the content.
 
+## Setup (optional)
+If you haven't selected an execution backend (Gemini or Claude), the default is Gemini.
+To switch to Claude: `/superpowers-setup` then ask to "Switch to Claude".
+
 
 ## Preconditions (do not skip)
 1) The user must have replied **APPROVED** to a written plan.
@@ -55,6 +59,13 @@ Read and apply these skills when relevant:
 
 ## Execution rules (strict)
 1) Implement **ONE** plan step at a time.
+   - **Use the unified execution script** to perform the changes:
+     ```bash
+     python .agent/skills/superpowers-workflow/scripts/execute_task.py \
+       --skill tdd \
+       --task "Step X: <Description>..."
+     ```
+   - Do not edit files manually unless the script fails or you are fixing a minor issue.
 2) After each step:
    - Run the step’s verification command(s) (or, if you cannot run them, provide exact commands and expected outcomes).
    - Append a short note to `artifacts/superpowers/execution.md` containing:
