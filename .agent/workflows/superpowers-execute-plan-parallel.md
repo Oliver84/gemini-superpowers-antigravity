@@ -58,16 +58,19 @@ If `artifacts/superpowers/plan.md` does not exist:
 
 ```bash
 # Example: Batch 1 has 3 independent steps
-python .agent/skills/superpowers-workflow/scripts/spawn_subagent.py \
+python .agent/skills/superpowers-workflow/scripts/execute_task.py \
   --skill tdd \
+  --background \
   --task "Step 1: Add retry logic to sync.py with exponential backoff" &
 
-python .agent/skills/superpowers-workflow/scripts/spawn_subagent.py \
+python .agent/skills/superpowers-workflow/scripts/execute_task.py \
   --skill rest-automation \
+  --background \
   --task "Step 2: Add pagination handling to fetch_items()" &
 
-python .agent/skills/superpowers-workflow/scripts/spawn_subagent.py \
+python .agent/skills/superpowers-workflow/scripts/execute_task.py \
   --skill python-automation \
+  --background \
   --task "Step 3: Update CLI args to support --max-retries flag" &
 
 # Wait for all to complete
